@@ -40,6 +40,6 @@ export class Weapon implements Equipment {
     public position: Position,
     public container: Container,
   ) {
-    this.container.putItem(this);
+    this.container.putItem(this, this.position);
   }
 }
