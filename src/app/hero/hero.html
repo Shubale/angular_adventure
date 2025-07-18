@@ -21,17 +21,6 @@
     </div>
   </div>
   <div class="hero-eq-backpack">
-    @for (_ of getIterable(BACKPACK_SIZE[1]); track $index; let i = $index){
-      <div class="hero-eq-backpack-row">
-        @for (_ of getIterable(BACKPACK_SIZE[0]); track $index; let j = $index) {
-          <div (mouseenter)="onItemHover($event)" (mouseout)="onUnhoverItem($event)" (click)="onItemClick(hero.backpack.data[i][j])" class="hero-eq-s hero-eq-backpack-cell">
-            @if (hero.backpack.data[i][j].data) {
-              X
-            }
-          </div>
-        }
-      </div>
-    }
-
+    <app-container [container]="hero.backpack"></app-container>
   </div>
 </div>
