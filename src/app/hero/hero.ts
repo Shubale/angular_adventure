@@ -1,14 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
+import { Component } from '@angular/core';
 import Size from '../models/size';
 import { Character } from '../models/character';
-import Container, { ContainerCell } from '../models/container';
-import { Equipment, ItemRarity, Weapon } from '../models/equipment';
+import Container from '../models/container';
+import { ItemRarity, Weapon } from '../models/equipment';
 import { ContainerComponent } from '../container/container.component';
 
 @Component({
@@ -17,13 +11,9 @@ import { ContainerComponent } from '../container/container.component';
   templateUrl: './hero.html',
   styleUrl: './hero.scss',
 })
-export class Hero implements AfterViewInit {
+export class Hero {
   // Width, Height
   protected readonly BACKPACK_SIZE: Size = [13, 8];
-
-  protected HTMLArrayReferences: Array<HTMLCollection> = [];
-
-  @ViewChildren('backpack_row') protected t!: QueryList<ElementRef>;
 
   public hero: Character;
 
@@ -57,13 +47,5 @@ export class Hero implements AfterViewInit {
       this.hero.backpack,
     );
     console.log(this.hero.backpack);
-  }
-
-  ngAfterViewInit() {
-    console.log('Children: ', this.t.get(0)?.nativeElement.children[1]);
-    // this.t.get(0)?.nativeElement?.children[1]?.style?.backgroundColor = 'red';
-    this.t?.forEach((e) => {
-      console.log(e);
-    });
   }
 }

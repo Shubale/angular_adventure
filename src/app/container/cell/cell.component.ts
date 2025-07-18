@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Equipment } from '../../models/equipment';
 import { ContainerCell } from '../../models/container';
 
 @Component({
@@ -12,4 +11,5 @@ import { ContainerCell } from '../../models/container';
 })
 export class CellComponent {
   @Input() data!: ContainerCell;
+  @Input() isHighlighted!: boolean;
 }

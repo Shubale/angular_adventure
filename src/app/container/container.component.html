@@ -1,8 +1,8 @@
 @for (_ of getIterable(container.data.length); track $index; let i = $index){
-  <div #backpack_row class="hero-eq-backpack-row">
+  <div #container_row class="hero-eq-backpack-row">
     @for (_ of getIterable(container.data[0].length); track $index; let j = $index) {
-      <div (mouseenter)="onItemHover($event)" (mouseout)="onUnhoverItem($event)" (click)="onItemClick(container.data[i][j])" class="hero-eq-s hero-eq-backpack-cell">
-        <app-cell [data]="container.data[i][j]"></app-cell>
+      <div (mouseenter)="onItemHover($event, container.data[i][j])" (mouseout)="onUnhoverItem($event)" (click)="onItemClick(container.data[i][j])">
+        <app-cell [isHighlighted]="shouldHighlightCell([i,j], mousePosition)" [data]="container.data[i][j]"></app-cell>
       </div>
     }
   </div>
