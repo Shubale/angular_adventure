@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "jest_test": {
+    "angular-adventure": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -63,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "jest_test:build:production"
+              "buildTarget": "angular-adventure:build:production"
             },
             "development": {
-              "buildTarget": "jest_test:build:development"
+              "buildTarget": "angular-adventure:build:development"
             }
           },
           "defaultConfiguration": "development"

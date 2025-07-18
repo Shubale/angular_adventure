@@ -1,0 +1,62 @@
+.hero-container {
+  width: 25vw;
+  display: flex;
+  padding: 1rem;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+.hero-eq {
+  display: flex;
+  gap: 1rem;
+
+  > * {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-eq-amulet-gloves {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  .hero-eq-rings {
+    gap: 4rem;
+  }
+}
+
+.hero-eq-s {
+  width: 2rem;
+  height: 2rem;
+  background: grey;
+}
+
+.hero-eq-m {
+  width: 4rem;
+  height: 4rem;
+  background: grey;
+}
+
+.hero-eq-l {
+  width: 4rem;
+  height: 8rem;
+  background: grey;
+}
+
+.hero-eq-backpack {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.hero-eq-backpack-row {
+  border-collapse: collapse;
+  display: flex;
+}
+
+.hero-eq-backpack-cell {
+  border: 1px solid darkgray;
+}
