@@ -1,12 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  QueryList,
-  ViewChildren,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Container, { ContainerCell } from '../models/container';
 import { Equipment } from '../models/equipment';
@@ -20,7 +12,7 @@ import Position from '../models/position';
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.scss'],
 })
-export class ContainerComponent implements AfterViewInit {
+export class ContainerComponent {
   @Input() container!: Container;
 
   protected isMovingItem: boolean = false;
@@ -32,13 +24,6 @@ export class ContainerComponent implements AfterViewInit {
   }
 
   protected mousePosition: Position = [0, 0];
-
-  @ViewChildren('container_row') protected t!: QueryList<ElementRef>;
-
-  ngAfterViewInit() {
-    console.log('Children: ', this.t);
-    this.t.get(0)!.nativeElement.children[3].style.background = 'red';
-  }
 
   onItemClick($event: ContainerCell) {
     console.log($event);
@@ -53,7 +38,6 @@ export class ContainerComponent implements AfterViewInit {
     ) {
       if (this.container.moveItem(this.movingItem!, [$event.y, $event.x])) {
         this.isMovingItem = false;
-        console.log('Unmove');
         return;
       }
     }
@@ -64,29 +48,12 @@ export class ContainerComponent implements AfterViewInit {
       this.movingItem = $event!.data;
       this.isMovingItem = true;
     }
-
-    console.log(`You are ${this.movingItem ? '' : 'not'} moving item`);
   }
 
-  onItemHover($event: MouseEvent, item: ContainerCell) {
+  onItemHover(item: ContainerCell) {
     if (this.isMovingItem) {
       this.mousePosition = [item.y, item.x];
-      console.log('Mouse position', this.mousePosition);
-      this.t.get(0)!.nativeElement.children[3].style.background = 'red';
-      if ($event.target) {
-        console.log('eve', $event.target);
-      }
-      ($event.target as HTMLElement).style.backgroundColor = 'green';
-    } else {
-      ($event.target as HTMLElement).style.backgroundColor = 'grey';
     }
-    this.t.get(0)!.nativeElement.children[3].style.backgroundColor = 'red';
-    //console.log(this.t.get(0)!.nativeElement.children[3].style);
-    //console.log(this.t.get(0)!.nativeElement.children[3]);
-  }
-
-  onUnhoverItem($event: MouseEvent) {
-    // ($event.target as HTMLElement).style.backgroundColor = 'grey';
   }
 
   shouldHighlightCell(
