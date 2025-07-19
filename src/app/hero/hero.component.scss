@@ -7,6 +7,11 @@
   gap: 5rem;
 }
 
+.hero-stats {
+  display: flex;
+  flex-direction: column;
+}
+
 .hero-eq {
   display: flex;
   gap: 1rem;

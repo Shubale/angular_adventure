@@ -1,0 +1,68 @@
+<div class="hero-container">
+  <div class="hero-eq">
+    <div>
+      <div class="hero-eq-l hero-eq-weapon">
+        @if (hero.equipment.weapon1) {
+          X
+        }
+      </div>
+    </div>
+    <div class="hero-eq-amulet-gloves">
+      <div class="hero-eq-s hero-eq-amulet">
+        @if (hero.equipment.amulet) {
+          X
+        }
+      </div>
+      <div class="hero-eq-m hero-eq-gloves">
+        @if (hero.equipment.gloves) {
+          X
+        }
+      </div>
+    </div>
+    <div>
+      <div class="hero-eq-m hero-eq-helm">
+        @if (hero.equipment.helmet) {
+          X
+        }
+      </div>
+      <div class="hero-eq-l hero-eq-body-armour">
+        @if (hero.equipment.bodyArmour) {
+          X
+        }
+      </div>
+      <div class="hero-eq-m hero-eq-boots">
+        @if (hero.equipment.boots) {
+          X
+        }
+      </div>
+    </div>
+    <div class="hero-eq-rings">
+      <div class="hero-eq-s hero-eq-ring">
+        @if (hero.equipment.ring1) {
+          X
+        }
+      </div>
+      <div class="hero-eq-s hero-eq-ring">
+        @if (hero.equipment.ring1) {
+          X
+        }
+      </div>
+    </div>
+    <div>
+      <div class="hero-eq-l hero-eq-weapon">
+        @if (hero.equipment.weapon2) {
+          X
+        }
+      </div>
+    </div>
+  </div>
+  <div class="hero-eq-backpack">
+    <app-container [container]="hero.backpack"></app-container>
+  </div>
+  <div class="hero-stats">
+    @for (mod of hero.mods | keyvalue; track mod) {
+      <span>{{mod.key}}: {{mod.value}}</span>
+    }
+  </div>
+</div>
+

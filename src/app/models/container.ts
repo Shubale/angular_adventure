@@ -1,5 +1,6 @@
 import { Equipment } from './equipment';
 import Position from './position';
+import EquipmentSlots from './equipment_slots';
 
 export class ContainerCell {
   constructor(
@@ -49,6 +50,7 @@ export default class Container {
 
   removeItem(item: Equipment, position?: Position): void {
     position = position ?? item.position;
+    if (!position) return;
     for (let i = position[1]; i < position[1] + item.size[1]; i++) {
       for (let j = position[0]; j < position[0] + item.size[0]; j++) {
         this.data[j][i].data = undefined;

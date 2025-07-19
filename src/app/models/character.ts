@@ -1,11 +1,13 @@
-import { CharacterModifiers } from './mods';
-import { Weapon } from './equipment';
+import { ArmourModifiers, CharacterModifiers } from './mods';
+import { Armour, EquipmentType, ItemRarity, Weapon } from './equipment';
 import Container from './container';
+import EquipmentSlots from './equipment_slots';
 
 export class Character {
   private baseMods: CharacterModifiers;
   public currentHitPoints;
   public backpack: Container = new Container(6, 6);
+  public equipment: EquipmentSlots = new EquipmentSlots();
   constructor(
     public name: string,
     public mods: CharacterModifiers,
@@ -17,17 +19,62 @@ export class Character {
   }
 
   public equipWeapon(weapon: Weapon): void {
-    this.mods.minDmg = weapon.mods.minDmg;
-    this.mods.maxDmg = weapon.mods.maxDmg;
-    this.mods.critChance = weapon.mods.critChance;
-    this.mods.critDamage = weapon.mods.critDamage;
+    this.mods.baseMinDmg = weapon.mods.baseMinDmg;
+    this.mods.baseMaxDmg = weapon.mods.baseMaxDmg;
+    this.mods.baseCritChance = weapon.mods.baseCritChance;
+    this.mods.baseCritDamage = weapon.mods.baseCritDamage;
+    this.equipment.weapon1 = weapon;
   }
 
-  public unequipWeapon(): void {
-    this.mods.minDmg = this.baseMods.minDmg;
-    this.mods.maxDmg = this.baseMods.maxDmg;
-    this.mods.critChance = this.baseMods.critChance;
-    this.mods.critDamage = this.baseMods.critDamage;
+  public unEquipWeapon(): void {
+    this.mods.baseMinDmg = this.baseMods.baseMinDmg;
+    this.mods.baseMaxDmg = this.baseMods.baseMaxDmg;
+    this.mods.baseCritChance = this.baseMods.baseCritChance;
+    this.mods.baseCritDamage = this.baseMods.baseCritDamage;
+    this.equipment.weapon1 = undefined;
+  }
+
+  public equipArmour(armour: Armour): void {
+    let mod: keyof typeof armour.mods;
+    for (mod in armour.mods) {
+      this.mods[mod] += armour.mods[mod] ?? 0;
+    }
+    switch (armour.type) {
+      case EquipmentType.GLOVES:
+        this.equipment.gloves = armour;
+        break;
+      case EquipmentType.HELMET:
+        this.equipment.helmet = armour;
+        break;
+      case EquipmentType.BODY_ARMOUR:
+        this.equipment.bodyArmour = armour;
+        break;
+      case EquipmentType.BOOTS:
+        this.equipment.boots = armour;
+        break;
+    }
+  }
+
+  public unEquipArmour(armour: Armour): void {
+    if (!armour) return;
+    let mod: keyof typeof armour.mods;
+    for (mod in armour.mods) {
+      this.mods[mod] -= armour.mods[mod] ?? 0;
+    }
+    switch (armour.type) {
+      case EquipmentType.GLOVES:
+        this.equipment.gloves = undefined;
+        break;
+      case EquipmentType.HELMET:
+        this.equipment.helmet = undefined;
+        break;
+      case EquipmentType.BODY_ARMOUR:
+        this.equipment.bodyArmour = undefined;
+        break;
+      case EquipmentType.BOOTS:
+        this.equipment.boots = undefined;
+        break;
+    }
   }
 
   public takeDmg(dmg: number): void {
