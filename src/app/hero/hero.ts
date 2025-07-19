@@ -19,6 +19,11 @@ export class Hero {
 
   constructor() {
     this.hero = new Character('The hero', {
+      baseBlockChance: 0,
+      baseCritChance: 0,
+      baseCritDamage: 0,
+      baseMaxDmg: 0,
+      baseMinDmg: 0,
       armour: 0,
       blockChance: 0,
       critChance: 0,
@@ -37,13 +42,26 @@ export class Hero {
       'Short sword',
       ItemRarity.COMMON,
       {
-        minDmg: 1,
-        maxDmg: 5,
-        critChance: 0.1,
-        critDamage: 1.6,
+        baseMinDmg: 1,
+        baseMaxDmg: 5,
+        baseCritChance: 0.1,
+        baseCritDamage: 1.6,
       },
       [3, 1],
       [0, 0],
+      this.hero.backpack,
+    );
+    const weapon2: Weapon = new Weapon(
+      'Zweihander',
+      ItemRarity.UNCOMMON,
+      {
+        baseMinDmg: 6,
+        baseMaxDmg: 18,
+        baseCritChance: 0.15,
+        baseCritDamage: 2.0,
+      },
+      [4, 2],
+      [0, 1],
       this.hero.backpack,
     );
     console.log(this.hero.backpack);
