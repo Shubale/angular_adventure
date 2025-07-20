@@ -13,9 +13,9 @@
           X
         }
       </div>
-      <div class="hero-eq-m hero-eq-gloves">
+      <div (click)="onItemSlotClick(hero.equipment.gloves, EquipmentType.GLOVES)" class="hero-eq-m hero-eq-gloves">
         @if (hero.equipment.gloves) {
-          X
+          <img style="width: 100%" src="assets/placeholders/equipment/gloves_placeholder.svg">
         }
       </div>
     </div>
@@ -60,7 +60,7 @@
     <app-container [container]="hero.backpack"></app-container>
   </div>
   <div class="hero-stats">
-    @for (mod of hero.mods | keyvalue; track mod) {
+    @for (mod of hero.mods | keyvalue; track mod.key) {
       <span>{{mod.key}}: {{mod.value}}</span>
     }
   </div>

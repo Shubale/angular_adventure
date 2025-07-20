@@ -1,6 +1,8 @@
 import { Equipment } from './equipment';
 import Position from './position';
 import EquipmentSlots from './equipment_slots';
+import { ItemService } from '../services/item.service';
+import { inject } from '@angular/core';
 
 export class ContainerCell {
   constructor(
@@ -12,6 +14,8 @@ export class ContainerCell {
 
 export default class Container {
   public data: Array<Array<ContainerCell>>;
+
+  private itemService: ItemService = inject(ItemService);
   constructor(width: number, height: number) {
     this.data = Array.from({ length: height }, () =>
       Array.from({ length: width }),
@@ -31,6 +35,7 @@ export default class Container {
     }
     this.removeItem(item, oldPosition);
     this.putItem(item, position);
+    this.itemService.movingItem = undefined;
     return true;
   }
 

@@ -1,10 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import Size from '../models/size';
 import { Character } from '../models/character';
 import Container from '../models/container';
-import { Armour, EquipmentType, ItemRarity, Weapon } from '../models/equipment';
+import {
+  Armour,
+  Equipment,
+  EquipmentType,
+  ItemRarity,
+  Weapon,
+} from '../models/equipment';
 import { ContainerComponent } from '../container/container.component';
 import { KeyValuePipe } from '@angular/common';
+import { ItemService } from '../services/item.service';
 
 @Component({
   selector: 'app-hero',
@@ -15,6 +22,8 @@ import { KeyValuePipe } from '@angular/common';
 export class HeroComponent {
   // Width, Height
   protected readonly BACKPACK_SIZE: Size = [13, 8];
+
+  private itemService: ItemService = inject(ItemService);
 
   public hero: Character;
 
@@ -75,6 +84,29 @@ export class HeroComponent {
       EquipmentType.GLOVES,
     );
     this.hero.equipWeapon(weapon);
-    this.hero.equipArmour(testGloves);
+    // this.hero.equipArmour(testGloves);
   }
+  onItemSlotClick(item: Equipment | undefined, slotType: EquipmentType) {
+    console.log(
+      'Clicked on item slot',
+      item,
+      slotType,
+      this.itemService.movingItem,
+    );
+    // There isn't item in slot nor moving
+    if (!item && !this.itemService.movingItem) return;
+    // There isn't item in slot, but there is one moving
+    if (!item && this.itemService.movingItem) {
+      if (slotType != this.itemService.movingItem.type) {
+        return;
+      }
+      if (this.itemService.movingItem instanceof Armour) {
+        this.hero.equipArmour(this.itemService.movingItem);
+      }
+    }
+  }
+
+  canMoveIntoSlot(slotType: EquipmentType) {}
+
+  protected readonly EquipmentType = EquipmentType;
 }

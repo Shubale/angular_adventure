@@ -34,6 +34,11 @@ export interface Equipment {
   size: Size;
   position?: Position;
   container: Container | EquipmentSlots;
+  mods:
+    | WeaponModifiers
+    | ArmourModifiers
+    | JewelleryModifiers
+    | ShieldModifiers;
 }
 
 export class Weapon implements Equipment {
@@ -61,14 +66,31 @@ export class Armour implements Equipment {
     public mods: ArmourModifiers,
     public size: Size,
     public position: Position,
-    public container: Container,
+    public container: Container | EquipmentSlots,
     public type:
       | EquipmentType.BOOTS
       | EquipmentType.GLOVES
       | EquipmentType.BODY_ARMOUR
       | EquipmentType.HELMET,
   ) {
-    this.container.putItem(this, this.position);
+    if (!(this.container instanceof EquipmentSlots)) {
+      this.container.putItem(this, this.position);
+    } else {
+      switch (type) {
+        case EquipmentType.GLOVES:
+          this.container.gloves = this;
+          break;
+        case EquipmentType.HELMET:
+          this.container.helmet = this;
+          break;
+        case EquipmentType.BODY_ARMOUR:
+          this.container.bodyArmour = this;
+          break;
+        case EquipmentType.BOOTS:
+          this.container.boots = this;
+          break;
+      }
+    }
   }
 }
 

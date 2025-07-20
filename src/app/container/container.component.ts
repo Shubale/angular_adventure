@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Container, { ContainerCell } from '../models/container';
 import { Equipment } from '../models/equipment';
 import { CellComponent } from './cell/cell.component';
 import Position from '../models/position';
+import { ItemService } from '../services/item.service';
 
 @Component({
   selector: 'app-container',
@@ -15,9 +16,7 @@ import Position from '../models/position';
 export class ContainerComponent {
   @Input() container!: Container;
 
-  protected isMovingItem: boolean = false;
-
-  protected movingItem: Equipment | undefined;
+  private itemService: ItemService = inject(ItemService);
 
   public getIterable(n: number): Iterable<number> {
     return Array(n);
@@ -28,30 +27,36 @@ export class ContainerComponent {
   onItemClick($event: ContainerCell) {
     console.log($event);
     // Base case. Cell is empty and not moving an item
-    if (!$event.data && !this.isMovingItem) return;
+    if (!$event.data && !this.itemService.movingItem) return;
     // Empty cell == can put item if it is being moved
     // OR
     // Cell with data, but of the same equipment we try to move
     if (
-      (!$event.data && this.isMovingItem) ||
-      ($event.data && this.isMovingItem && $event!.data === this.movingItem)
+      (!$event.data && this.itemService.movingItem) ||
+      ($event.data &&
+        this.itemService.movingItem &&
+        $event!.data === this.itemService.movingItem)
     ) {
-      if (this.container.moveItem(this.movingItem!, [$event.y, $event.x])) {
-        this.isMovingItem = false;
+      if (
+        this.container.moveItem(this.itemService.movingItem!, [
+          $event.y,
+          $event.x,
+        ])
+      ) {
         return;
       }
     }
     // Cell has data and we are not moving an item
-    if ($event.data && !this.isMovingItem) {
+    if ($event.data && !this.itemService.movingItem) {
       // We can be sure that data exists since we've exhausted isMovingItem options
       // when data is not present
-      this.movingItem = $event!.data;
-      this.isMovingItem = true;
+      this.itemService.movingItem = $event!.data;
+      console.log('Set moving item to', $event.data);
     }
   }
 
   onItemHover(item: ContainerCell) {
-    if (this.isMovingItem) {
+    if (this.itemService.movingItem) {
       this.mousePosition = [item.y, item.x];
     }
   }
@@ -60,13 +65,14 @@ export class ContainerComponent {
     cellPosition: Position,
     hoverPosition: Position,
   ): boolean {
-    if (!this.isMovingItem) return false;
-    if (!this.movingItem) return false;
+    if (!this.itemService.movingItem) return false;
     if (cellPosition === hoverPosition) return true;
     if (
-      cellPosition[1] < this.movingItem.size[1] + hoverPosition[1] &&
+      cellPosition[1] <
+        this.itemService.movingItem.size[1] + hoverPosition[1] &&
       cellPosition[1] >= hoverPosition[1] &&
-      cellPosition[0] < this.movingItem.size[0] + hoverPosition[0] &&
+      cellPosition[0] <
+        this.itemService.movingItem.size[0] + hoverPosition[0] &&
       cellPosition[0] >= hoverPosition[0]
     ) {
       return true;

@@ -2,12 +2,15 @@ import { ArmourModifiers, CharacterModifiers } from './mods';
 import { Armour, EquipmentType, ItemRarity, Weapon } from './equipment';
 import Container from './container';
 import EquipmentSlots from './equipment_slots';
+import { ItemService } from '../services/item.service';
+import { inject } from '@angular/core';
 
 export class Character {
   private baseMods: CharacterModifiers;
   public currentHitPoints;
   public backpack: Container = new Container(6, 6);
   public equipment: EquipmentSlots = new EquipmentSlots();
+  private itemService: ItemService = inject(ItemService);
   constructor(
     public name: string,
     public mods: CharacterModifiers,
@@ -24,6 +27,8 @@ export class Character {
     this.mods.baseCritChance = weapon.mods.baseCritChance;
     this.mods.baseCritDamage = weapon.mods.baseCritDamage;
     this.equipment.weapon1 = weapon;
+    this.backpack.removeItem(weapon);
+    weapon.container = this.equipment;
   }
 
   public unEquipWeapon(): void {
@@ -53,6 +58,9 @@ export class Character {
         this.equipment.boots = armour;
         break;
     }
+    this.backpack.removeItem(armour);
+    armour.container = this.equipment;
+    this.itemService.movingItem = undefined;
   }
 
   public unEquipArmour(armour: Armour): void {
