@@ -1,11 +1,15 @@
 import { CharacterModifiers } from './mods';
-import { Weapon } from './equipment';
 import Container from './container';
+import EquipmentSlots from './equipment_slots';
+import { ItemService } from '../services/item.service';
+import { inject } from '@angular/core';
 
 export class Character {
-  private baseMods: CharacterModifiers;
+  baseMods: CharacterModifiers;
   public currentHitPoints;
   public backpack: Container = new Container(6, 6);
+  public equipment: EquipmentSlots = new EquipmentSlots();
+  private itemService: ItemService = inject(ItemService);
   constructor(
     public name: string,
     public mods: CharacterModifiers,
@@ -14,20 +18,6 @@ export class Character {
     this.currentHitPoints = JSON.parse(JSON.stringify(mods.hitPoints));
     //localStorage.setItem('wep', JSON.stringify(this.weapon));
     //console.log(JSON.parse(localStorage.getItem('wep') ?? '{}'));
-  }
-
-  public equipWeapon(weapon: Weapon): void {
-    this.mods.minDmg = weapon.mods.minDmg;
-    this.mods.maxDmg = weapon.mods.maxDmg;
-    this.mods.critChance = weapon.mods.critChance;
-    this.mods.critDamage = weapon.mods.critDamage;
-  }
-
-  public unequipWeapon(): void {
-    this.mods.minDmg = this.baseMods.minDmg;
-    this.mods.maxDmg = this.baseMods.maxDmg;
-    this.mods.critChance = this.baseMods.critChance;
-    this.mods.critDamage = this.baseMods.critDamage;
   }
 
   public takeDmg(dmg: number): void {
