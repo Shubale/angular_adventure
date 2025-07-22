@@ -1,7 +1,6 @@
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Container, { ContainerCell } from '../models/container';
-import { Equipment } from '../models/equipment';
 import { CellComponent } from './cell/cell.component';
 import Position from '../models/position';
 import { ItemService } from '../services/item.service';
@@ -25,32 +24,31 @@ export class ContainerComponent {
   protected mousePosition: Position = [0, 0];
 
   onItemClick($event: ContainerCell) {
-    console.log($event);
+    console.log('Container click: ', JSON.stringify($event.data?.name));
     // Base case. Cell is empty and not moving an item
-    if (!$event.data && !this.itemService.movingItem) return;
+    if (!$event.data && !this.itemService.movingItem.value) return;
     // Empty cell == can put item if it is being moved
     // OR
     // Cell with data, but of the same equipment we try to move
     if (
-      (!$event.data && this.itemService.movingItem) ||
+      (!$event.data && this.itemService.movingItem.value) ||
       ($event.data &&
-        this.itemService.movingItem &&
-        $event!.data === this.itemService.movingItem)
+        this.itemService.movingItem.value &&
+        $event!.data === this.itemService.movingItem.value)
     ) {
-      if (
-        this.container.moveItem(this.itemService.movingItem!, [
-          $event.y,
-          $event.x,
-        ])
-      ) {
-        return;
-      }
+      this.container.putItem(this.itemService.movingItem.value, [
+        $event.y,
+        $event.x,
+      ]);
+      return;
     }
     // Cell has data and we are not moving an item
-    if ($event.data && !this.itemService.movingItem) {
+    if ($event.data && !this.itemService.movingItem.value) {
       // We can be sure that data exists since we've exhausted isMovingItem options
       // when data is not present
-      this.itemService.movingItem = $event!.data;
+      this.itemService.movingItem.next($event.data);
+      this.container.removeItem($event.data);
+
       console.log('Set moving item to', $event.data);
     }
   }
@@ -65,14 +63,14 @@ export class ContainerComponent {
     cellPosition: Position,
     hoverPosition: Position,
   ): boolean {
-    if (!this.itemService.movingItem) return false;
+    if (!this.itemService.movingItem.value) return false;
     if (cellPosition === hoverPosition) return true;
     if (
       cellPosition[1] <
-        this.itemService.movingItem.size[1] + hoverPosition[1] &&
+        this.itemService.movingItem.value.size[1] + hoverPosition[1] &&
       cellPosition[1] >= hoverPosition[1] &&
       cellPosition[0] <
-        this.itemService.movingItem.size[0] + hoverPosition[0] &&
+        this.itemService.movingItem.value.size[0] + hoverPosition[0] &&
       cellPosition[0] >= hoverPosition[0]
     ) {
       return true;

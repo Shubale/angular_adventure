@@ -1,6 +1,5 @@
 import { Equipment } from './equipment';
 import Position from './position';
-import EquipmentSlots from './equipment_slots';
 import { ItemService } from '../services/item.service';
 import { inject } from '@angular/core';
 
@@ -33,9 +32,9 @@ export default class Container {
       console.log('Cant put item here');
       return false;
     }
-    this.removeItem(item, oldPosition);
+    if (oldPosition) this.removeItem(item, oldPosition);
     this.putItem(item, position);
-    this.itemService.movingItem = undefined;
+    this.itemService.movingItem.next(undefined);
     return true;
   }
 
@@ -50,6 +49,8 @@ export default class Container {
       }
     }
     item.position = position;
+    console.log('Put item ', item, ' at ', position);
+    this.itemService.movingItem.next(undefined);
     return true;
   }
 

@@ -1,7 +1,9 @@
 <div class="hero-container">
   <div class="hero-eq">
     <div>
-      <div class="hero-eq-l hero-eq-weapon">
+      <div (click)="onItemSlotClick(hero.equipment.weapon1, EquipmentType.WEAPON)"
+      class="hero-eq-l hero-eq-weapon"
+      >
         @if (hero.equipment.weapon1) {
           X
         }
@@ -65,4 +67,5 @@
     }
   </div>
 </div>
+
 

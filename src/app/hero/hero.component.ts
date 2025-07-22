@@ -83,7 +83,7 @@ export class HeroComponent {
       this.hero.backpack,
       EquipmentType.GLOVES,
     );
-    this.hero.equipWeapon(weapon);
+    this.equipWeapon(weapon);
     // this.hero.equipArmour(testGloves);
   }
   onItemSlotClick(item: Equipment | undefined, slotType: EquipmentType) {
@@ -91,22 +91,95 @@ export class HeroComponent {
       'Clicked on item slot',
       item,
       slotType,
-      this.itemService.movingItem,
+      this.itemService.movingItem.value,
     );
     // There isn't item in slot nor moving
-    if (!item && !this.itemService.movingItem) return;
+    if (!item && !this.itemService.movingItem.value) return;
     // There isn't item in slot, but there is one moving
-    if (!item && this.itemService.movingItem) {
-      if (slotType != this.itemService.movingItem.type) {
+    if (!item && this.itemService.movingItem.value) {
+      // Don't react if the slot doesn't match
+      if (slotType != this.itemService.movingItem.value.type) {
         return;
       }
-      if (this.itemService.movingItem instanceof Armour) {
-        this.hero.equipArmour(this.itemService.movingItem);
-      }
+      // Since we check type of slot against item's type
+      // we can be sure that we are equipping right item
+      if (this.itemService.movingItem.value instanceof Armour)
+        this.equipArmour(this.itemService.movingItem.value as Armour);
+      if (this.itemService.movingItem.value instanceof Weapon)
+        this.equipWeapon(this.itemService.movingItem.value as Weapon);
+    }
+    // Not empty slot and we are not moving an item -> grab that item
+    if (item && !this.itemService.movingItem.value) {
+      this.itemService.movingItem.next(item);
+      if (item instanceof Armour) this.unEquipArmour(item as Armour);
+      if (item instanceof Weapon) this.unEquipWeapon();
     }
   }
 
-  canMoveIntoSlot(slotType: EquipmentType) {}
+  public equipWeapon(weapon: Weapon): void {
+    this.hero.mods.baseMinDmg = weapon.mods.baseMinDmg;
+    this.hero.mods.baseMaxDmg = weapon.mods.baseMaxDmg;
+    this.hero.mods.baseCritChance = weapon.mods.baseCritChance;
+    this.hero.mods.baseCritDamage = weapon.mods.baseCritDamage;
+    this.hero.equipment.weapon1 = weapon;
+    this.hero.backpack.removeItem(weapon);
+    weapon.container = this.hero.equipment;
+    this.itemService.movingItem.next(undefined);
+  }
+
+  public unEquipWeapon(): void {
+    this.hero.mods.baseMinDmg = this.hero.baseMods.baseMinDmg;
+    this.hero.mods.baseMaxDmg = this.hero.baseMods.baseMaxDmg;
+    this.hero.mods.baseCritChance = this.hero.baseMods.baseCritChance;
+    this.hero.mods.baseCritDamage = this.hero.baseMods.baseCritDamage;
+    this.hero.equipment.weapon1 = undefined;
+  }
+
+  public equipArmour(armour: Armour): void {
+    let mod: keyof typeof armour.mods;
+    for (mod in armour.mods) {
+      this.hero.mods[mod] += armour.mods[mod] ?? 0;
+    }
+    switch (armour.type) {
+      case EquipmentType.GLOVES:
+        this.hero.equipment.gloves = armour;
+        break;
+      case EquipmentType.HELMET:
+        this.hero.equipment.helmet = armour;
+        break;
+      case EquipmentType.BODY_ARMOUR:
+        this.hero.equipment.bodyArmour = armour;
+        break;
+      case EquipmentType.BOOTS:
+        this.hero.equipment.boots = armour;
+        break;
+    }
+    this.hero.backpack.removeItem(armour);
+    armour.container = this.hero.equipment;
+    this.itemService.movingItem.next(undefined);
+  }
+
+  public unEquipArmour(armour: Armour): void {
+    if (!armour) return;
+    let mod: keyof typeof armour.mods;
+    for (mod in armour.mods) {
+      this.hero.mods[mod] -= armour.mods[mod] ?? 0;
+    }
+    switch (armour.type) {
+      case EquipmentType.GLOVES:
+        this.hero.equipment.gloves = undefined;
+        break;
+      case EquipmentType.HELMET:
+        this.hero.equipment.helmet = undefined;
+        break;
+      case EquipmentType.BODY_ARMOUR:
+        this.hero.equipment.bodyArmour = undefined;
+        break;
+      case EquipmentType.BOOTS:
+        this.hero.equipment.boots = undefined;
+        break;
+    }
+  }
 
   protected readonly EquipmentType = EquipmentType;
 }
