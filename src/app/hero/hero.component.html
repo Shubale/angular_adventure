@@ -17,7 +17,7 @@
       </div>
       <div (click)="onItemSlotClick(hero.equipment.get('gloves'), EquipmentType.GLOVES)" class="hero-eq-m hero-eq-gloves">
         @if (hero.equipment.get('gloves')) {
-          <img style="width: 100%" src="assets/placeholders/equipment/gloves_placeholder.svg">
+          <img style="width: 100%" src="{{hero.equipment.get('gloves')?.imagePath}}">
         }
       </div>
     </div>

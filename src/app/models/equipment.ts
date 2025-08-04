@@ -7,7 +7,6 @@ import {
 import Size from './size';
 import Position from './position';
 import Container from './container';
-import EquipmentSlots from './equipment_slots';
 
 export enum EquipmentType {
   WEAPON,
@@ -38,6 +37,7 @@ export interface Equipment {
     | ArmourModifiers
     | JewelleryModifiers
     | ShieldModifiers;
+  imagePath: string;
 }
 
 export class Weapon implements Equipment {
@@ -48,7 +48,11 @@ export class Weapon implements Equipment {
     public size: Size,
     public position: Position | undefined,
     public type: EquipmentType.WEAPON = EquipmentType.WEAPON,
-  ) {}
+    public imagePath: string,
+    container?: Container,
+  ) {
+    if (container && this.position) container.putItem(this, this.position);
+  }
 }
 
 export class Armour implements Equipment {
@@ -63,7 +67,11 @@ export class Armour implements Equipment {
       | EquipmentType.GLOVES
       | EquipmentType.BODY_ARMOUR
       | EquipmentType.HELMET,
-  ) {}
+    public imagePath: string,
+    container?: Container,
+  ) {
+    if (container && this.position) container.putItem(this, this.position);
+  }
 }
 
 export class Jewellery implements Equipment {
@@ -72,9 +80,13 @@ export class Jewellery implements Equipment {
     public rarity: ItemRarity,
     public mods: JewelleryModifiers,
     public size: Size,
-    public position: Position,
+    public position: Position | undefined,
     public type: EquipmentType.AMULET | EquipmentType.RING,
-  ) {}
+    public imagePath: string,
+    container?: Container,
+  ) {
+    if (container && this.position) container.putItem(this, this.position);
+  }
 }
 
 export class Shield implements Equipment {
@@ -83,10 +95,11 @@ export class Shield implements Equipment {
     public rarity: ItemRarity,
     public mods: ShieldModifiers,
     public size: Size,
-    public position: Position,
-    public container: Container,
+    public position: Position | undefined,
     public type: EquipmentType.SHIELD = EquipmentType.SHIELD,
+    public imagePath: string,
+    container?: Container,
   ) {
-    this.container.putItem(this, this.position);
+    if (container && this.position) container.putItem(this, this.position);
   }
 }

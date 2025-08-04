@@ -59,6 +59,8 @@ export class HeroComponent {
       },
       [3, 1],
       [0, 0],
+      EquipmentType.WEAPON,
+      '',
     );
     const weapon2: Weapon = new Weapon(
       'Zweihander',
@@ -71,6 +73,8 @@ export class HeroComponent {
       },
       [4, 2],
       [0, 1],
+      EquipmentType.WEAPON,
+      '',
     );
     const testGloves = new Armour(
       'Leather gloves',
@@ -79,6 +83,7 @@ export class HeroComponent {
       [2, 2],
       [0, 3],
       EquipmentType.GLOVES,
+      'assets/placeholders/equipment/gloves_placeholder.svg',
     );
     this.equipWeapon(weapon);
     this.hero.backpack.putItem(weapon2, weapon2.position!);
