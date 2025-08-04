@@ -59,7 +59,6 @@ export class HeroComponent {
       },
       [3, 1],
       [0, 0],
-      this.hero.backpack,
     );
     const weapon2: Weapon = new Weapon(
       'Zweihander',
@@ -72,7 +71,6 @@ export class HeroComponent {
       },
       [4, 2],
       [0, 1],
-      this.hero.backpack,
     );
     const testGloves = new Armour(
       'Leather gloves',
@@ -80,10 +78,11 @@ export class HeroComponent {
       { armour: 10, hitPoints: 3 },
       [2, 2],
       [0, 3],
-      this.hero.backpack,
       EquipmentType.GLOVES,
     );
     this.equipWeapon(weapon);
+    this.hero.backpack.putItem(weapon2, weapon2.position!);
+    this.hero.backpack.putItem(testGloves, testGloves.position!);
     // this.hero.equipArmour(testGloves);
   }
   onItemSlotClick(item: Equipment | undefined, slotType: EquipmentType) {
@@ -121,9 +120,8 @@ export class HeroComponent {
     this.hero.mods.baseMaxDmg = weapon.mods.baseMaxDmg;
     this.hero.mods.baseCritChance = weapon.mods.baseCritChance;
     this.hero.mods.baseCritDamage = weapon.mods.baseCritDamage;
-    this.hero.equipment.weapon1 = weapon;
+    this.hero.equipment.set('weapon1', weapon);
     this.hero.backpack.removeItem(weapon);
-    weapon.container = this.hero.equipment;
     this.itemService.movingItem.next(undefined);
   }
 
@@ -132,7 +130,7 @@ export class HeroComponent {
     this.hero.mods.baseMaxDmg = this.hero.baseMods.baseMaxDmg;
     this.hero.mods.baseCritChance = this.hero.baseMods.baseCritChance;
     this.hero.mods.baseCritDamage = this.hero.baseMods.baseCritDamage;
-    this.hero.equipment.weapon1 = undefined;
+    this.hero.equipment.set('weapon1', undefined);
   }
 
   public equipArmour(armour: Armour): void {
@@ -142,20 +140,19 @@ export class HeroComponent {
     }
     switch (armour.type) {
       case EquipmentType.GLOVES:
-        this.hero.equipment.gloves = armour;
+        this.hero.equipment.set('gloves', armour);
         break;
       case EquipmentType.HELMET:
-        this.hero.equipment.helmet = armour;
+        this.hero.equipment.set('helmet', armour);
         break;
       case EquipmentType.BODY_ARMOUR:
-        this.hero.equipment.bodyArmour = armour;
+        this.hero.equipment.set('bodyArmour', armour);
         break;
       case EquipmentType.BOOTS:
-        this.hero.equipment.boots = armour;
+        this.hero.equipment.set('boots', armour);
         break;
     }
     this.hero.backpack.removeItem(armour);
-    armour.container = this.hero.equipment;
     this.itemService.movingItem.next(undefined);
   }
 
@@ -167,16 +164,16 @@ export class HeroComponent {
     }
     switch (armour.type) {
       case EquipmentType.GLOVES:
-        this.hero.equipment.gloves = undefined;
+        this.hero.equipment.set('gloves', undefined);
         break;
       case EquipmentType.HELMET:
-        this.hero.equipment.helmet = undefined;
+        this.hero.equipment.set('helmet', undefined);
         break;
       case EquipmentType.BODY_ARMOUR:
-        this.hero.equipment.bodyArmour = undefined;
+        this.hero.equipment.set('bodyArmour', undefined);
         break;
       case EquipmentType.BOOTS:
-        this.hero.equipment.boots = undefined;
+        this.hero.equipment.set('boots', undefined);
         break;
     }
   }

@@ -32,8 +32,7 @@ export interface Equipment {
   type: EquipmentType;
   rarity: ItemRarity;
   size: Size;
-  position?: Position;
-  container: Container | EquipmentSlots;
+  position: Position | undefined;
   mods:
     | WeaponModifiers
     | ArmourModifiers
@@ -47,16 +46,9 @@ export class Weapon implements Equipment {
     public rarity: ItemRarity,
     public mods: WeaponModifiers,
     public size: Size,
-    public position: Position,
-    public container: Container | EquipmentSlots,
+    public position: Position | undefined,
     public type: EquipmentType.WEAPON = EquipmentType.WEAPON,
-  ) {
-    if (!(this.container instanceof EquipmentSlots)) {
-      this.container.putItem(this, this.position);
-    } else {
-      this.container.weapon1 = this;
-    }
-  }
+  ) {}
 }
 
 export class Armour implements Equipment {
@@ -65,33 +57,13 @@ export class Armour implements Equipment {
     public rarity: ItemRarity,
     public mods: ArmourModifiers,
     public size: Size,
-    public position: Position,
-    public container: Container | EquipmentSlots,
+    public position: Position | undefined,
     public type:
       | EquipmentType.BOOTS
       | EquipmentType.GLOVES
       | EquipmentType.BODY_ARMOUR
       | EquipmentType.HELMET,
-  ) {
-    if (!(this.container instanceof EquipmentSlots)) {
-      this.container.putItem(this, this.position);
-    } else {
-      switch (type) {
-        case EquipmentType.GLOVES:
-          this.container.gloves = this;
-          break;
-        case EquipmentType.HELMET:
-          this.container.helmet = this;
-          break;
-        case EquipmentType.BODY_ARMOUR:
-          this.container.bodyArmour = this;
-          break;
-        case EquipmentType.BOOTS:
-          this.container.boots = this;
-          break;
-      }
-    }
-  }
+  ) {}
 }
 
 export class Jewellery implements Equipment {
@@ -101,11 +73,8 @@ export class Jewellery implements Equipment {
     public mods: JewelleryModifiers,
     public size: Size,
     public position: Position,
-    public container: Container,
     public type: EquipmentType.AMULET | EquipmentType.RING,
-  ) {
-    this.container.putItem(this, this.position);
-  }
+  ) {}
 }
 
 export class Shield implements Equipment {
