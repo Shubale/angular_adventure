@@ -1,9 +1,8 @@
 import { CharacterModifiers } from './mods';
 import Container from './container';
-import EquipmentSlots from './equipment_slots';
 import { ItemService } from '../services/item.service';
 import { inject } from '@angular/core';
-import { Equipment, EquipmentType } from './equipment';
+import { Equipment } from './equipment';
 
 export class Character {
   baseMods: CharacterModifiers;

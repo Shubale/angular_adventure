@@ -10,9 +10,9 @@
       </div>
     </div>
     <div class="hero-eq-amulet-gloves">
-      <div class="hero-eq-s hero-eq-amulet">
+      <div (click)="onItemSlotClick(hero.equipment.get('amulet'), EquipmentType.AMULET)" class="hero-eq-s hero-eq-amulet">
         @if (hero.equipment.get('amulet')) {
-          X
+          <img src="{{hero.equipment.get('amulet')?.imagePath}}" alt="">
         }
       </div>
       <div (click)="onItemSlotClick(hero.equipment.get('gloves'), EquipmentType.GLOVES)" class="hero-eq-m hero-eq-gloves">
@@ -39,14 +39,14 @@
       </div>
     </div>
     <div class="hero-eq-rings">
-      <div class="hero-eq-s hero-eq-ring">
+      <div class="hero-eq-s hero-eq-ring" (click)="onItemSlotClick(hero.equipment.get('ring1'), EquipmentType.RING, 1)">
         @if (hero.equipment.get('ring1')) {
-          X
+          <img src="{{hero.equipment.get('ring1')?.imagePath}}" alt="">
         }
       </div>
-      <div class="hero-eq-s hero-eq-ring">
-        @if (hero.equipment.get('ring1')) {
-          X
+      <div class="hero-eq-s hero-eq-ring" (click)="onItemSlotClick(hero.equipment.get('ring2'), EquipmentType.RING, 2)">
+        @if (hero.equipment.get('ring2')) {
+          <img src="{{hero.equipment.get('ring2')?.imagePath}}" alt="">
         }
       </div>
     </div>

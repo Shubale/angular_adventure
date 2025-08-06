@@ -7,6 +7,7 @@ import {
   Equipment,
   EquipmentType,
   ItemRarity,
+  Jewellery,
   Weapon,
 } from '../models/equipment';
 import { ContainerComponent } from '../container/container.component';
@@ -14,6 +15,9 @@ import { KeyValuePipe } from '@angular/common';
 import { ItemService } from '../services/item.service';
 import shortSword from '../items/weapons/short_sword';
 import greatSword from '../items/weapons/great_sword';
+import goldAmulet from '../items/jewellery/amulet';
+import ring1 from '../items/jewellery/ring1';
+import ring2 from '../items/jewellery/ring2';
 
 @Component({
   selector: 'app-hero',
@@ -63,9 +67,16 @@ export class HeroComponent {
     this.equipWeapon(shortSword);
     this.hero.backpack.putItem(greatSword, greatSword.position!);
     this.hero.backpack.putItem(testGloves, testGloves.position!);
+    this.hero.backpack.putItem(goldAmulet, goldAmulet.position!);
+    this.hero.backpack.putItem(ring1, ring1.position!);
+    this.hero.backpack.putItem(ring2, ring2.position!);
     // this.hero.equipArmour(testGloves);
   }
-  onItemSlotClick(item: Equipment | undefined, slotType: EquipmentType) {
+  onItemSlotClick(
+    item: Equipment | undefined,
+    slotType: EquipmentType,
+    ringSlot?: 1 | 2,
+  ) {
     console.log(
       'Clicked on item slot',
       item,
@@ -86,12 +97,18 @@ export class HeroComponent {
         this.equipArmour(this.itemService.movingItem.value as Armour);
       if (this.itemService.movingItem.value instanceof Weapon)
         this.equipWeapon(this.itemService.movingItem.value as Weapon);
+      if (this.itemService.movingItem.value instanceof Jewellery)
+        this.equipJewellery(
+          this.itemService.movingItem.value as Jewellery,
+          ringSlot,
+        );
     }
     // Not empty slot and we are not moving an item -> grab that item
     if (item && !this.itemService.movingItem.value) {
       this.itemService.movingItem.next(item);
       if (item instanceof Armour) this.unEquipArmour(item as Armour);
       if (item instanceof Weapon) this.unEquipWeapon();
+      if (item instanceof Jewellery) this.unequipJewellery(item as Jewellery);
     }
   }
 
@@ -111,6 +128,45 @@ export class HeroComponent {
     this.hero.mods.baseCritChance = this.hero.baseMods.baseCritChance;
     this.hero.mods.baseCritDamage = this.hero.baseMods.baseCritDamage;
     this.hero.equipment.set('weapon1', undefined);
+  }
+
+  public equipJewellery(jewellery: Jewellery, ringSlot?: 1 | 2): void {
+    let mod: keyof typeof jewellery.mods;
+    for (mod in jewellery.mods) {
+      this.hero.mods[mod] += jewellery.mods[mod] ?? 0;
+    }
+    switch (jewellery.type) {
+      case EquipmentType.RING:
+        if (ringSlot !== 1 && ringSlot !== 2) {
+          throw new Error('You did not provide ring slot!');
+        }
+        this.hero.equipment.set(`ring${ringSlot}`, jewellery);
+        break;
+      case EquipmentType.AMULET:
+        this.hero.equipment.set('amulet', jewellery);
+        break;
+    }
+    this.hero.backpack.removeItem(jewellery);
+    this.itemService.movingItem.next(undefined);
+  }
+
+  public unequipJewellery(jewellery: Jewellery, ringSlot?: 1 | 2): void {
+    if (!jewellery) return;
+    let mod: keyof typeof jewellery.mods;
+    for (mod in jewellery.mods) {
+      this.hero.mods[mod] -= jewellery.mods[mod] ?? 0;
+    }
+    switch (jewellery.type) {
+      case EquipmentType.RING:
+        if (ringSlot !== 1 && ringSlot !== 2) {
+          throw new Error('You did not provide ring slot!');
+        }
+        this.hero.equipment.set(`ring${ringSlot}`, undefined);
+        break;
+      case EquipmentType.AMULET:
+        this.hero.equipment.set('amulet', undefined);
+        break;
+    }
   }
 
   public equipArmour(armour: Armour): void {
