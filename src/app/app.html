@@ -1,5 +1,13 @@
-<div class="app-container">
+<div (mousemove)="onMouseMove($event)" class="app-container">
   <div class="main-window"></div>
   <app-hero></app-hero>
 </div>
-
+@if (itemService.movingItem.value){
+  <div class="moving-item" [style.left]="left" [style.top]="top">
+    <img
+      src="{{itemService.movingItem.value.imagePath}}" alt=""
+      [style.width]="1.8 * itemService.movingItem.value.size[1] + 'rem'"
+      [style.height]="1.8 * itemService.movingItem.value.size[0] + 'rem'"
+    >
+  </div>
+}

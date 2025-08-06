@@ -6,6 +6,11 @@
   width: 2rem;
   height: 2rem;
   background: grey;
+  img {
+    position: absolute;
+    width: 1rem;
+    height: 3rem;
+  }
 }
 
 .cell-green-highlight {

@@ -1,6 +1,6 @@
 import { Armour, Jewellery, Shield, Weapon } from './equipment';
 
-export default class EquipmentSlots {
+export default class EquipmentSlots2 {
   weapon1: Weapon | undefined;
   weapon2: Weapon | Shield | undefined;
 

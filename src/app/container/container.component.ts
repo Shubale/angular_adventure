@@ -21,10 +21,10 @@ export class ContainerComponent {
     return Array(n);
   }
 
-  protected mousePosition: Position = [0, 0];
+  protected mouseInvIndexPosition: Position | undefined = undefined;
 
-  onItemClick($event: ContainerCell) {
-    console.log('Container click: ', JSON.stringify($event.data?.name));
+  onItemClick($event: ContainerCell, mouseEvent: MouseEvent) {
+    console.log('Container click: ', mouseEvent);
     // Base case. Cell is empty and not moving an item
     if (!$event.data && !this.itemService.movingItem.value) return;
     // Empty cell == can put item if it is being moved
@@ -46,6 +46,7 @@ export class ContainerComponent {
     if ($event.data && !this.itemService.movingItem.value) {
       // We can be sure that data exists since we've exhausted isMovingItem options
       // when data is not present
+      this.itemService.lastPressedPosition.set([mouseEvent.y, mouseEvent.x]);
       this.itemService.movingItem.next($event.data);
       this.container.removeItem($event.data);
 
@@ -55,14 +56,19 @@ export class ContainerComponent {
 
   onItemHover(item: ContainerCell) {
     if (this.itemService.movingItem) {
-      this.mousePosition = [item.y, item.x];
+      this.mouseInvIndexPosition = [item.y, item.x];
     }
+  }
+
+  onItemUnhover() {
+    this.mouseInvIndexPosition = undefined;
   }
 
   shouldHighlightCell(
     cellPosition: Position,
-    hoverPosition: Position,
+    hoverPosition: Position | undefined,
   ): boolean {
+    if (hoverPosition === undefined) return false;
     if (!this.itemService.movingItem.value) return false;
     if (cellPosition === hoverPosition) return true;
     if (
