@@ -2,7 +2,10 @@
   [class.cell-green-highlight]="isHighlighted"
   class="hero-eq-s hero-eq-backpack-cell"
 >
-  @if (data.data) {
-    X
+  @if (data.data && comparePosition(data.data.position!, this.position)) {
+    <img
+      [style.width]="2*data.data.size[1] + 'rem'"
+      [style.height]="2*data.data.size[0] + 'rem'"
+      src="{{data.data.imagePath}}">
   }
 </div>

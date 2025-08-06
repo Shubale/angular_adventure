@@ -12,6 +12,8 @@ import {
 import { ContainerComponent } from '../container/container.component';
 import { KeyValuePipe } from '@angular/common';
 import { ItemService } from '../services/item.service';
+import shortSword from '../items/weapons/short_sword';
+import greatSword from '../items/weapons/great_sword';
 
 @Component({
   selector: 'app-hero',
@@ -48,34 +50,7 @@ export class HeroComponent {
       this.BACKPACK_SIZE[0],
       this.BACKPACK_SIZE[1],
     );
-    const weapon: Weapon = new Weapon(
-      'Short sword',
-      ItemRarity.COMMON,
-      {
-        baseMinDmg: 1,
-        baseMaxDmg: 5,
-        baseCritChance: 0.1,
-        baseCritDamage: 1.6,
-      },
-      [3, 1],
-      [0, 0],
-      EquipmentType.WEAPON,
-      '',
-    );
-    const weapon2: Weapon = new Weapon(
-      'Zweihander',
-      ItemRarity.UNCOMMON,
-      {
-        baseMinDmg: 6,
-        baseMaxDmg: 18,
-        baseCritChance: 0.15,
-        baseCritDamage: 2.0,
-      },
-      [4, 2],
-      [0, 1],
-      EquipmentType.WEAPON,
-      '',
-    );
+
     const testGloves = new Armour(
       'Leather gloves',
       ItemRarity.COMMON,
@@ -85,8 +60,8 @@ export class HeroComponent {
       EquipmentType.GLOVES,
       'assets/placeholders/equipment/gloves_placeholder.svg',
     );
-    this.equipWeapon(weapon);
-    this.hero.backpack.putItem(weapon2, weapon2.position!);
+    this.equipWeapon(shortSword);
+    this.hero.backpack.putItem(greatSword, greatSword.position!);
     this.hero.backpack.putItem(testGloves, testGloves.position!);
     // this.hero.equipArmour(testGloves);
   }

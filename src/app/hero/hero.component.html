@@ -5,7 +5,7 @@
       class="hero-eq-l hero-eq-weapon"
       >
         @if (hero.equipment.get('weapon1')) {
-          X
+          <img src="{{hero.equipment.get('weapon1')?.imagePath}}" alt="">
         }
       </div>
     </div>
@@ -17,7 +17,7 @@
       </div>
       <div (click)="onItemSlotClick(hero.equipment.get('gloves'), EquipmentType.GLOVES)" class="hero-eq-m hero-eq-gloves">
         @if (hero.equipment.get('gloves')) {
-          <img style="width: 100%" src="{{hero.equipment.get('gloves')?.imagePath}}">
+          <img src="{{hero.equipment.get('gloves')?.imagePath}}" alt="">
         }
       </div>
     </div>
