@@ -32,9 +32,9 @@
           X
         }
       </div>
-      <div class="hero-eq-m hero-eq-boots">
+      <div class="hero-eq-m hero-eq-boots" (click)="onItemSlotClick(hero.equipment.get('boots'), EquipmentType.BOOTS)">
         @if (hero.equipment.get('boots')) {
-          X
+          <img src="{{hero.equipment.get('boots')?.imagePath}}" alt="">
         }
       </div>
     </div>

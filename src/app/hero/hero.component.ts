@@ -6,7 +6,6 @@ import {
   Armour,
   Equipment,
   EquipmentType,
-  ItemRarity,
   Jewellery,
   Weapon,
 } from '../models/equipment';
@@ -19,6 +18,7 @@ import goldAmulet from '../items/jewellery/amulet';
 import ring1 from '../items/jewellery/ring1';
 import ring2 from '../items/jewellery/ring2';
 import testGloves from '../items/armours/gloves';
+import boots from '../items/armours/boots';
 
 @Component({
   selector: 'app-hero',
@@ -57,6 +57,7 @@ export class HeroComponent {
     );
 
     this.equipWeapon(shortSword);
+    this.equipArmour(boots);
     this.hero.backpack.putItem(greatSword, greatSword.position!);
     this.hero.backpack.putItem(testGloves, testGloves.position!);
     this.hero.backpack.putItem(goldAmulet, goldAmulet.position!);
