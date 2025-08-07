@@ -18,6 +18,7 @@ import greatSword from '../items/weapons/great_sword';
 import goldAmulet from '../items/jewellery/amulet';
 import ring1 from '../items/jewellery/ring1';
 import ring2 from '../items/jewellery/ring2';
+import testGloves from '../items/armours/gloves';
 
 @Component({
   selector: 'app-hero',
@@ -55,15 +56,6 @@ export class HeroComponent {
       this.BACKPACK_SIZE[1],
     );
 
-    const testGloves = new Armour(
-      'Leather gloves',
-      ItemRarity.COMMON,
-      { armour: 10, hitPoints: 3 },
-      [2, 2],
-      [0, 3],
-      EquipmentType.GLOVES,
-      'assets/placeholders/equipment/gloves_placeholder.svg',
-    );
     this.equipWeapon(shortSword);
     this.hero.backpack.putItem(greatSword, greatSword.position!);
     this.hero.backpack.putItem(testGloves, testGloves.position!);
@@ -108,7 +100,8 @@ export class HeroComponent {
       this.itemService.movingItem.next(item);
       if (item instanceof Armour) this.unEquipArmour(item as Armour);
       if (item instanceof Weapon) this.unEquipWeapon();
-      if (item instanceof Jewellery) this.unequipJewellery(item as Jewellery);
+      if (item instanceof Jewellery)
+        this.unequipJewellery(item as Jewellery, ringSlot);
     }
   }
 

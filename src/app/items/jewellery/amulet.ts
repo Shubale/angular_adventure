@@ -9,7 +9,7 @@ const goldAmulet: Jewellery = new Jewellery(
   },
   [1, 1],
   [6, 0],
-  EquipmentType.RING,
+  EquipmentType.AMULET,
   'assets/placeholders/equipment/amulet_placeholder.svg',
 );
 

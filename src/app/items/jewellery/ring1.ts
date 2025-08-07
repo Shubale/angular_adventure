@@ -9,7 +9,7 @@ const ring1: Jewellery = new Jewellery(
   },
   [1, 1],
   [5, 0],
-  EquipmentType.AMULET,
+  EquipmentType.RING,
   'assets/placeholders/equipment/ring1_placeholder.svg',
 );
 
