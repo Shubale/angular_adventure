@@ -90,6 +90,10 @@ export class HeroComponent {
       if (slotType != this.itemService.movingItem.value.type) {
         return;
       }
+      if (item) {
+        this.swapItems(item, ringSlot);
+        return;
+      }
       // Since we check type of slot against item's type
       // we can be sure that we are equipping right item
       if (this.itemService.movingItem.value instanceof Armour)
@@ -102,7 +106,7 @@ export class HeroComponent {
           ringSlot,
         );
 
-      // this.itemService.movingItem.next(item);
+      this.itemService.movingItem.next(itemCopy);
       return;
     }
     // Not empty slot and we are not moving an item -> grab that item
@@ -111,7 +115,22 @@ export class HeroComponent {
     }
   }
 
-  private swapItems() {}
+  private swapItems(item: Equipment, ringSlot?: 1 | 2) {
+    if (item instanceof Armour) this.unEquipArmour(item as Armour);
+    if (item instanceof Weapon) this.unEquipWeapon();
+    if (item instanceof Jewellery)
+      this.unequipJewellery(item as Jewellery, ringSlot);
+    if (this.itemService.movingItem.value instanceof Armour)
+      this.equipArmour(this.itemService.movingItem.value as Armour);
+    if (this.itemService.movingItem.value instanceof Weapon)
+      this.equipWeapon(this.itemService.movingItem.value as Weapon);
+    if (this.itemService.movingItem.value instanceof Jewellery)
+      this.equipJewellery(
+        this.itemService.movingItem.value as Jewellery,
+        ringSlot,
+      );
+    this.itemService.movingItem.next(item);
+  }
 
   private unequipEquipment(item: Equipment, ringSlot?: 1 | 2) {
     this.itemService.movingItem.next(item);
