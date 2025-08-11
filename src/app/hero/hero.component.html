@@ -22,14 +22,14 @@
       </div>
     </div>
     <div>
-      <div class="hero-eq-m hero-eq-helm">
+      <div (click)="onItemSlotClick(hero.equipment.get('helmet'), EquipmentType.HELMET)" class="hero-eq-m hero-eq-helm">
         @if (hero.equipment.get('helmet')) {
-          X
+          <img src="{{hero.equipment.get('helmet')?.imagePath}}" alt="">
         }
       </div>
-      <div class="hero-eq-l hero-eq-body-armour">
+      <div (click)="onItemSlotClick(hero.equipment.get('bodyArmour'), EquipmentType.BODY_ARMOUR)" class="hero-eq-l hero-eq-body-armour">
         @if (hero.equipment.get('bodyArmour')) {
-          X
+          <img src="{{hero.equipment.get('bodyArmour')?.imagePath}}" alt="">
         }
       </div>
       <div class="hero-eq-m hero-eq-boots" (click)="onItemSlotClick(hero.equipment.get('boots'), EquipmentType.BOOTS)">

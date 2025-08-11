@@ -19,6 +19,8 @@ import ring1 from '../items/jewellery/ring1';
 import ring2 from '../items/jewellery/ring2';
 import testGloves from '../items/armours/gloves';
 import boots from '../items/armours/boots';
+import helmet from '../items/armours/helmet';
+import bodyArmour from '../items/armours/bodyArmour';
 
 @Component({
   selector: 'app-hero',
@@ -58,6 +60,8 @@ export class HeroComponent {
 
     this.equipWeapon(shortSword);
     this.equipArmour(boots);
+    this.equipArmour(helmet);
+    this.equipArmour(bodyArmour);
     this.hero.backpack.putItem(greatSword, greatSword.position!);
     this.hero.backpack.putItem(testGloves, testGloves.position!);
     this.hero.backpack.putItem(goldAmulet, goldAmulet.position!);
@@ -79,7 +83,9 @@ export class HeroComponent {
     // There isn't item in slot nor moving
     if (!item && !this.itemService.movingItem.value) return;
     // There isn't item in slot, but there is one moving
-    if (!item && this.itemService.movingItem.value) {
+    if (this.itemService.movingItem.value) {
+      const itemCopy = undefined;
+
       // Don't react if the slot doesn't match
       if (slotType != this.itemService.movingItem.value.type) {
         return;
@@ -95,15 +101,24 @@ export class HeroComponent {
           this.itemService.movingItem.value as Jewellery,
           ringSlot,
         );
+
+      // this.itemService.movingItem.next(item);
+      return;
     }
     // Not empty slot and we are not moving an item -> grab that item
     if (item && !this.itemService.movingItem.value) {
-      this.itemService.movingItem.next(item);
-      if (item instanceof Armour) this.unEquipArmour(item as Armour);
-      if (item instanceof Weapon) this.unEquipWeapon();
-      if (item instanceof Jewellery)
-        this.unequipJewellery(item as Jewellery, ringSlot);
+      this.unequipEquipment(item, ringSlot);
     }
+  }
+
+  private swapItems() {}
+
+  private unequipEquipment(item: Equipment, ringSlot?: 1 | 2) {
+    this.itemService.movingItem.next(item);
+    if (item instanceof Armour) this.unEquipArmour(item as Armour);
+    if (item instanceof Weapon) this.unEquipWeapon();
+    if (item instanceof Jewellery)
+      this.unequipJewellery(item as Jewellery, ringSlot);
   }
 
   public equipWeapon(weapon: Weapon): void {
