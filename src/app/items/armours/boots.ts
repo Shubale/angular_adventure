@@ -5,7 +5,7 @@ const boots = new Armour(
   ItemRarity.COMMON,
   { armour: 15, hitPoints: 1 },
   [2, 2],
-  [0, 3],
+  undefined,
   EquipmentType.BOOTS,
   'assets/placeholders/equipment/boots_placeholder.svg',
 );
