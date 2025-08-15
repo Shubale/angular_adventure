@@ -24,7 +24,6 @@ export class ContainerComponent {
   protected mouseInvIndexPosition: Position | undefined = undefined;
 
   onItemClick($event: ContainerCell, mouseEvent: MouseEvent) {
-    console.log('Container click: ', mouseEvent);
     // Base case. Cell is empty and not moving an item
     if (!$event.data && !this.itemService.movingItem.value) return;
     // Empty cell == can put item if it is being moved

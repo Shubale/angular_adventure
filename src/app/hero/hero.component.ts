@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import Size from '../models/size';
 import { Character } from '../models/character';
 import Container from '../models/container';
@@ -8,6 +8,7 @@ import {
   EquipmentType,
   ItemRarity,
   Jewellery,
+  Shield,
   Weapon,
 } from '../models/equipment';
 import { ContainerComponent } from '../container/container.component';
@@ -22,6 +23,7 @@ import testGloves from '../items/armours/gloves';
 import boots from '../items/armours/boots';
 import helmet from '../items/armours/helmet';
 import bodyArmour from '../items/armours/bodyArmour';
+import shield from '../items/armours/shield';
 
 @Component({
   selector: 'app-hero',
@@ -38,6 +40,9 @@ export class HeroComponent {
   public hero: Character;
 
   constructor() {
+    effect(() => {
+      console.log(this.itemService.lastPressedPosition());
+    });
     this.hero = new Character('The hero', {
       baseBlockChance: 0,
       baseCritChance: 0.05,
@@ -68,6 +73,7 @@ export class HeroComponent {
     this.hero.backpack.putItem(goldAmulet, goldAmulet.position!);
     this.hero.backpack.putItem(ring1, ring1.position!);
     this.hero.backpack.putItem(ring2, ring2.position!);
+    this.hero.backpack.putItem(shield, shield.position!);
     // this.hero.equipArmour(testGloves);
   }
   onItemSlotClick(
@@ -90,8 +96,6 @@ export class HeroComponent {
     if (!item && !this.itemService.movingItem.value) return;
     // There isn't item in slot, but there is one moving
     if (this.itemService.movingItem.value) {
-      const itemCopy = undefined;
-
       // Don't react if the slot doesn't match
       if (!slotType.includes(this.itemService.movingItem.value.type)) {
         console.log(
@@ -119,8 +123,10 @@ export class HeroComponent {
           this.itemService.movingItem.value as Jewellery,
           ringSlot,
         );
+      if (this.itemService.movingItem.value instanceof Shield) {
+        this.equipShield(this.itemService.movingItem.value as Shield);
+      }
 
-      this.itemService.movingItem.next(itemCopy);
       return;
     }
     // Not empty slot and we are not moving an item -> grab that item
@@ -130,6 +136,7 @@ export class HeroComponent {
   }
 
   private swapItems(item: Equipment, ringSlot?: 1 | 2, weaponSlot?: 1 | 2) {
+    if (item instanceof Shield) this.unequipShield(item as Shield);
     if (item instanceof Armour) this.unEquipArmour(item as Armour);
     if (item instanceof Weapon) this.unEquipWeapon(weaponSlot!);
     if (item instanceof Jewellery)
@@ -159,6 +166,7 @@ export class HeroComponent {
     if (item instanceof Weapon) this.unEquipWeapon(weaponSlot!);
     if (item instanceof Jewellery)
       this.unequipJewellery(item as Jewellery, ringSlot);
+    if (item instanceof Shield) this.unequipShield(item as Shield);
   }
 
   public equipWeapon(weapon: Weapon, weaponSlot: 1 | 2): void {
@@ -306,6 +314,27 @@ export class HeroComponent {
         this.hero.equipment.set('boots', undefined);
         break;
     }
+  }
+
+  private equipShield(shield: Shield): void {
+    if (!shield) return;
+    let mod: keyof typeof shield.mods;
+    for (mod in shield.mods) {
+      this.hero.mods[mod] += shield.mods[mod] ?? 0;
+    }
+    this.hero.mods.baseBlockChance = shield.mods.baseBlockChance;
+    this.hero.equipment.set('weapon2', shield);
+    this.itemService.movingItem.next(undefined);
+  }
+
+  private unequipShield(shield: Shield): void {
+    if (!shield) return;
+    let mod: keyof typeof shield.mods;
+    for (mod in shield.mods) {
+      this.hero.mods[mod] -= shield.mods[mod] ?? 0;
+    }
+    this.hero.mods.baseBlockChance = this.hero.baseMods.baseBlockChance;
+    this.hero.equipment.set('weapon2', undefined);
   }
 
   private setBaseDamage(source: Weapon | undefined): void {

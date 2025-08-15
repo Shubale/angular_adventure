@@ -12,16 +12,19 @@ import { ItemService } from './services/item.service';
 export class App {
   constructor() {
     effect(() => {
-      if (!this.itemService.movingItem.value) return;
-      this.left = `calc(${this.itemService.lastPressedPosition()[1]}px - ${this.itemService.movingItem.value?.size[1]}rem`;
-      this.top = `calc(${this.itemService.lastPressedPosition()[0]}px - ${this.itemService.movingItem.value?.size[0]}rem`;
+      const [top, left] = this.itemService.lastPressedPosition();
+      if (!this.itemService.movingItem.value) {
+        return;
+      }
+      this.left = `calc(${left}px - ${this.itemService.movingItem.value?.size[1]}rem`;
+      this.top = `calc(${top}px - ${this.itemService.movingItem.value?.size[0]}rem`;
     });
   }
   protected itemService: ItemService = inject(ItemService);
   protected left: string = '';
   protected top: string = '';
 
-  protected readonly title = signal('jest_test');
+  protected readonly title = signal('Angular Adventure');
 
   onMouseMove(event: MouseEvent): void {
     if (!this.itemService.movingItem.value) return;
