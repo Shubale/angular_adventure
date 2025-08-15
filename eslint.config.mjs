@@ -16,4 +16,9 @@ export default defineConfig([
   },
   tseslint.configs.recommended,
   recommendedConfig,
+  // {
+  //   rules: {
+  //     "prettier.printWidth": "80",
+  //   }
+  // }
 ]);

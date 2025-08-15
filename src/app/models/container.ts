@@ -65,6 +65,9 @@ export default class Container {
   }
 
   canPutItem(item: Equipment, position: Position): boolean {
+    if (!position) {
+      console.warn('WARNING; position is undefined', item);
+    }
     if (item.size[0] + position[0] > this.data.length) {
       return false;
     }

@@ -7,7 +7,6 @@ import {
 import Size from './size';
 import Position from './position';
 import Container from './container';
-import EquipmentSlots from './equipment_slots';
 
 export enum EquipmentType {
   WEAPON,
@@ -32,13 +31,13 @@ export interface Equipment {
   type: EquipmentType;
   rarity: ItemRarity;
   size: Size;
-  position?: Position;
-  container: Container | EquipmentSlots;
+  position: Position | undefined;
   mods:
     | WeaponModifiers
     | ArmourModifiers
     | JewelleryModifiers
     | ShieldModifiers;
+  imagePath: string;
 }
 
 export class Weapon implements Equipment {
@@ -47,15 +46,12 @@ export class Weapon implements Equipment {
     public rarity: ItemRarity,
     public mods: WeaponModifiers,
     public size: Size,
-    public position: Position,
-    public container: Container | EquipmentSlots,
+    public position: Position | undefined,
     public type: EquipmentType.WEAPON = EquipmentType.WEAPON,
+    public imagePath: string,
+    container?: Container,
   ) {
-    if (!(this.container instanceof EquipmentSlots)) {
-      this.container.putItem(this, this.position);
-    } else {
-      this.container.weapon1 = this;
-    }
+    if (container && this.position) container.putItem(this, this.position);
   }
 }
 
@@ -65,32 +61,16 @@ export class Armour implements Equipment {
     public rarity: ItemRarity,
     public mods: ArmourModifiers,
     public size: Size,
-    public position: Position,
-    public container: Container | EquipmentSlots,
+    public position: Position | undefined,
     public type:
       | EquipmentType.BOOTS
       | EquipmentType.GLOVES
       | EquipmentType.BODY_ARMOUR
       | EquipmentType.HELMET,
+    public imagePath: string,
+    container?: Container,
   ) {
-    if (!(this.container instanceof EquipmentSlots)) {
-      this.container.putItem(this, this.position);
-    } else {
-      switch (type) {
-        case EquipmentType.GLOVES:
-          this.container.gloves = this;
-          break;
-        case EquipmentType.HELMET:
-          this.container.helmet = this;
-          break;
-        case EquipmentType.BODY_ARMOUR:
-          this.container.bodyArmour = this;
-          break;
-        case EquipmentType.BOOTS:
-          this.container.boots = this;
-          break;
-      }
-    }
+    if (container && this.position) container.putItem(this, this.position);
   }
 }
 
@@ -100,11 +80,12 @@ export class Jewellery implements Equipment {
     public rarity: ItemRarity,
     public mods: JewelleryModifiers,
     public size: Size,
-    public position: Position,
-    public container: Container,
+    public position: Position | undefined,
     public type: EquipmentType.AMULET | EquipmentType.RING,
+    public imagePath: string,
+    container?: Container,
   ) {
-    this.container.putItem(this, this.position);
+    if (container && this.position) container.putItem(this, this.position);
   }
 }
 
@@ -114,10 +95,11 @@ export class Shield implements Equipment {
     public rarity: ItemRarity,
     public mods: ShieldModifiers,
     public size: Size,
-    public position: Position,
-    public container: Container,
+    public position: Position | undefined,
     public type: EquipmentType.SHIELD = EquipmentType.SHIELD,
+    public imagePath: string,
+    container?: Container,
   ) {
-    this.container.putItem(this, this.position);
+    if (container && this.position) container.putItem(this, this.position);
   }
 }

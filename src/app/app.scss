@@ -1,8 +1,19 @@
 .main-window {
-  width: 75vw;
+  width: 55vw;
   border: 1px solid black
 }
 
 .app-container {
   display: flex;
+}
+
+.moving-item {
+  width: 3rem;
+  height: 3rem;
+  position: fixed;
+  pointer-events: none;
+  img {
+    width: inherit;
+    height: inherit;
+  }
 }
