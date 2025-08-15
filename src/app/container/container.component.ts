@@ -46,8 +46,8 @@ export class ContainerComponent {
     if ($event.data && !this.itemService.movingItem.value) {
       // We can be sure that data exists since we've exhausted isMovingItem options
       // when data is not present
-      this.itemService.lastPressedPosition.set([mouseEvent.y, mouseEvent.x]);
       this.itemService.movingItem.next($event.data);
+      this.itemService.lastPressedPosition.set([mouseEvent.y, mouseEvent.x]);
       this.container.removeItem($event.data);
 
       console.log('Set moving item to', $event.data);

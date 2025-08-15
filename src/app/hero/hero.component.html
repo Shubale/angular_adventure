@@ -1,7 +1,7 @@
 <div class="hero-container">
   <div class="hero-eq">
     <div>
-      <div (click)="onItemSlotClick(hero.equipment.get('weapon1'), EquipmentType.WEAPON)"
+      <div (click)="onItemSlotClick(hero.equipment.get('weapon1'), [EquipmentType.WEAPON], $event, undefined, 1)"
       class="hero-eq-l hero-eq-weapon"
       >
         @if (hero.equipment.get('weapon1')) {
@@ -10,50 +10,50 @@
       </div>
     </div>
     <div class="hero-eq-amulet-gloves">
-      <div (click)="onItemSlotClick(hero.equipment.get('amulet'), EquipmentType.AMULET)" class="hero-eq-s hero-eq-amulet">
+      <div (click)="onItemSlotClick(hero.equipment.get('amulet'), [EquipmentType.AMULET], $event)" class="hero-eq-s hero-eq-amulet">
         @if (hero.equipment.get('amulet')) {
           <img src="{{hero.equipment.get('amulet')?.imagePath}}" alt="">
         }
       </div>
-      <div (click)="onItemSlotClick(hero.equipment.get('gloves'), EquipmentType.GLOVES)" class="hero-eq-m hero-eq-gloves">
+      <div (click)="onItemSlotClick(hero.equipment.get('gloves'), [EquipmentType.GLOVES], $event)" class="hero-eq-m hero-eq-gloves">
         @if (hero.equipment.get('gloves')) {
           <img src="{{hero.equipment.get('gloves')?.imagePath}}" alt="">
         }
       </div>
     </div>
     <div>
-      <div (click)="onItemSlotClick(hero.equipment.get('helmet'), EquipmentType.HELMET)" class="hero-eq-m hero-eq-helm">
+      <div (click)="onItemSlotClick(hero.equipment.get('helmet'), [EquipmentType.HELMET], $event)" class="hero-eq-m hero-eq-helm">
         @if (hero.equipment.get('helmet')) {
           <img src="{{hero.equipment.get('helmet')?.imagePath}}" alt="">
         }
       </div>
-      <div (click)="onItemSlotClick(hero.equipment.get('bodyArmour'), EquipmentType.BODY_ARMOUR)" class="hero-eq-l hero-eq-body-armour">
+      <div (click)="onItemSlotClick(hero.equipment.get('bodyArmour'), [EquipmentType.BODY_ARMOUR], $event)" class="hero-eq-l hero-eq-body-armour">
         @if (hero.equipment.get('bodyArmour')) {
           <img src="{{hero.equipment.get('bodyArmour')?.imagePath}}" alt="">
         }
       </div>
-      <div class="hero-eq-m hero-eq-boots" (click)="onItemSlotClick(hero.equipment.get('boots'), EquipmentType.BOOTS)">
+      <div class="hero-eq-m hero-eq-boots" (click)="onItemSlotClick(hero.equipment.get('boots'), [EquipmentType.BOOTS], $event)">
         @if (hero.equipment.get('boots')) {
           <img src="{{hero.equipment.get('boots')?.imagePath}}" alt="">
         }
       </div>
     </div>
     <div class="hero-eq-rings">
-      <div class="hero-eq-s hero-eq-ring" (click)="onItemSlotClick(hero.equipment.get('ring1'), EquipmentType.RING, 1)">
+      <div class="hero-eq-s hero-eq-ring" (click)="onItemSlotClick(hero.equipment.get('ring1'), [EquipmentType.RING], $event, 1)">
         @if (hero.equipment.get('ring1')) {
           <img src="{{hero.equipment.get('ring1')?.imagePath}}" alt="">
         }
       </div>
-      <div class="hero-eq-s hero-eq-ring" (click)="onItemSlotClick(hero.equipment.get('ring2'), EquipmentType.RING, 2)">
+      <div class="hero-eq-s hero-eq-ring" (click)="onItemSlotClick(hero.equipment.get('ring2'), [EquipmentType.RING], $event, 2)">
         @if (hero.equipment.get('ring2')) {
           <img src="{{hero.equipment.get('ring2')?.imagePath}}" alt="">
         }
       </div>
     </div>
     <div>
-      <div class="hero-eq-l hero-eq-weapon">
+      <div class="hero-eq-l hero-eq-weapon" (click)="onItemSlotClick(hero.equipment.get('weapon2'), [EquipmentType.WEAPON, EquipmentType.SHIELD], $event, undefined, 2)">
         @if (hero.equipment.get('weapon2')) {
-          X
+          <img src="{{hero.equipment.get('weapon2')?.imagePath}}" alt="">
         }
       </div>
     </div>

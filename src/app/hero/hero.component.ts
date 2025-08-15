@@ -6,6 +6,7 @@ import {
   Armour,
   Equipment,
   EquipmentType,
+  ItemRarity,
   Jewellery,
   Weapon,
 } from '../models/equipment';
@@ -58,7 +59,7 @@ export class HeroComponent {
       this.BACKPACK_SIZE[1],
     );
 
-    this.equipWeapon(shortSword);
+    this.equipWeapon(shortSword, 1);
     this.equipArmour(boots);
     this.equipArmour(helmet);
     this.equipArmour(bodyArmour);
@@ -71,15 +72,20 @@ export class HeroComponent {
   }
   onItemSlotClick(
     item: Equipment | undefined,
-    slotType: EquipmentType,
+    slotType: Array<EquipmentType>,
+    mouseEvent: MouseEvent,
     ringSlot?: 1 | 2,
+    weaponSlot?: 1 | 2,
   ) {
     console.log(
       'Clicked on item slot',
       item,
       slotType,
       this.itemService.movingItem.value,
+      '',
+      mouseEvent,
     );
+    this.itemService.lastPressedPosition.set([mouseEvent.y, mouseEvent.x]);
     // There isn't item in slot nor moving
     if (!item && !this.itemService.movingItem.value) return;
     // There isn't item in slot, but there is one moving
@@ -87,11 +93,16 @@ export class HeroComponent {
       const itemCopy = undefined;
 
       // Don't react if the slot doesn't match
-      if (slotType != this.itemService.movingItem.value.type) {
+      if (!slotType.includes(this.itemService.movingItem.value.type)) {
+        console.log(
+          'Wrong slot type',
+          this.itemService.movingItem.value.type,
+          slotType,
+        );
         return;
       }
       if (item) {
-        this.swapItems(item, ringSlot);
+        this.swapItems(item, ringSlot, weaponSlot);
         return;
       }
       // Since we check type of slot against item's type
@@ -99,7 +110,10 @@ export class HeroComponent {
       if (this.itemService.movingItem.value instanceof Armour)
         this.equipArmour(this.itemService.movingItem.value as Armour);
       if (this.itemService.movingItem.value instanceof Weapon)
-        this.equipWeapon(this.itemService.movingItem.value as Weapon);
+        this.equipWeapon(
+          this.itemService.movingItem.value as Weapon,
+          weaponSlot!,
+        );
       if (this.itemService.movingItem.value instanceof Jewellery)
         this.equipJewellery(
           this.itemService.movingItem.value as Jewellery,
@@ -111,19 +125,22 @@ export class HeroComponent {
     }
     // Not empty slot and we are not moving an item -> grab that item
     if (item && !this.itemService.movingItem.value) {
-      this.unequipEquipment(item, ringSlot);
+      this.unequipEquipment(item, ringSlot, weaponSlot);
     }
   }
 
-  private swapItems(item: Equipment, ringSlot?: 1 | 2) {
+  private swapItems(item: Equipment, ringSlot?: 1 | 2, weaponSlot?: 1 | 2) {
     if (item instanceof Armour) this.unEquipArmour(item as Armour);
-    if (item instanceof Weapon) this.unEquipWeapon();
+    if (item instanceof Weapon) this.unEquipWeapon(weaponSlot!);
     if (item instanceof Jewellery)
       this.unequipJewellery(item as Jewellery, ringSlot);
     if (this.itemService.movingItem.value instanceof Armour)
       this.equipArmour(this.itemService.movingItem.value as Armour);
     if (this.itemService.movingItem.value instanceof Weapon)
-      this.equipWeapon(this.itemService.movingItem.value as Weapon);
+      this.equipWeapon(
+        this.itemService.movingItem.value as Weapon,
+        weaponSlot!,
+      );
     if (this.itemService.movingItem.value instanceof Jewellery)
       this.equipJewellery(
         this.itemService.movingItem.value as Jewellery,
@@ -132,30 +149,79 @@ export class HeroComponent {
     this.itemService.movingItem.next(item);
   }
 
-  private unequipEquipment(item: Equipment, ringSlot?: 1 | 2) {
+  private unequipEquipment(
+    item: Equipment,
+    ringSlot?: 1 | 2,
+    weaponSlot?: 1 | 2,
+  ) {
     this.itemService.movingItem.next(item);
     if (item instanceof Armour) this.unEquipArmour(item as Armour);
-    if (item instanceof Weapon) this.unEquipWeapon();
+    if (item instanceof Weapon) this.unEquipWeapon(weaponSlot!);
     if (item instanceof Jewellery)
       this.unequipJewellery(item as Jewellery, ringSlot);
   }
 
-  public equipWeapon(weapon: Weapon): void {
-    this.hero.mods.baseMinDmg = weapon.mods.baseMinDmg;
-    this.hero.mods.baseMaxDmg = weapon.mods.baseMaxDmg;
-    this.hero.mods.baseCritChance = weapon.mods.baseCritChance;
-    this.hero.mods.baseCritDamage = weapon.mods.baseCritDamage;
-    this.hero.equipment.set('weapon1', weapon);
+  public equipWeapon(weapon: Weapon, weaponSlot: 1 | 2): void {
+    if (weaponSlot !== 1 && weaponSlot !== 2) {
+      throw new Error('You did not provide weaponSlot variable!');
+    }
+    if (weaponSlot === 2 && !this.hero.equipment.get('weapon1')) {
+      weaponSlot = 1;
+    }
+    if (weaponSlot === 2 && this.hero.equipment.get('weapon1')) {
+      const weapon1 = this.hero.equipment.get('weapon1') as Weapon;
+      const meanStats = {
+        baseMinDmg:
+          ((weapon1.mods.baseMinDmg + weapon.mods.baseMinDmg) / 2) * 1.2,
+        baseMaxDmg:
+          ((weapon1.mods.baseMaxDmg + weapon.mods.baseMaxDmg) / 2) * 1.2,
+        baseCritChance:
+          ((weapon1.mods.baseCritChance + weapon.mods.baseCritChance) / 2) *
+          1.2,
+        baseCritDamage:
+          ((weapon1.mods.baseCritDamage + weapon.mods.baseCritDamage) / 2) *
+          1.2,
+      };
+      let dummyWeapon: Weapon | null = new Weapon(
+        '',
+        ItemRarity.COMMON,
+        meanStats,
+        [0, 0],
+        undefined,
+        EquipmentType.WEAPON,
+        '',
+      );
+      this.setBaseDamage(dummyWeapon);
+      dummyWeapon = null;
+    } else {
+      this.setBaseDamage(weapon);
+    }
+    this.hero.equipment.set(`weapon${weaponSlot}`, weapon);
     this.hero.backpack.removeItem(weapon);
     this.itemService.movingItem.next(undefined);
   }
 
-  public unEquipWeapon(): void {
-    this.hero.mods.baseMinDmg = this.hero.baseMods.baseMinDmg;
-    this.hero.mods.baseMaxDmg = this.hero.baseMods.baseMaxDmg;
-    this.hero.mods.baseCritChance = this.hero.baseMods.baseCritChance;
-    this.hero.mods.baseCritDamage = this.hero.baseMods.baseCritDamage;
-    this.hero.equipment.set('weapon1', undefined);
+  public unEquipWeapon(weaponSlot: 1 | 2): void {
+    if (weaponSlot !== 1 && weaponSlot !== 2) {
+      throw new Error('You did not provide weaponSlot variable!');
+    }
+    this.hero.equipment.set(`weapon${weaponSlot}`, undefined);
+    if (weaponSlot === 1) {
+      if (this.hero.equipment.get('weapon2') instanceof Weapon) {
+        const weapon2 = this.hero.equipment.get('weapon2') as Weapon;
+        this.hero.equipment.set('weapon1', weapon2);
+        this.hero.equipment.set('weapon2', undefined);
+        this.setBaseDamage(weapon2);
+      } else {
+        this.setBaseDamage(undefined);
+      }
+    }
+    if (weaponSlot === 2) {
+      if (this.hero.equipment.get('weapon1') instanceof Weapon) {
+        const weapon1 = this.hero.equipment.get('weapon1') as Weapon;
+        this.setBaseDamage(weapon1);
+      }
+    }
   }
 
   public equipJewellery(jewellery: Jewellery, ringSlot?: 1 | 2): void {
@@ -242,5 +308,20 @@ export class HeroComponent {
     }
   }
 
+  private setBaseDamage(source: Weapon | undefined): void {
+    if (!source) {
+      this.hero.mods.baseMinDmg = this.hero.baseMods.baseMinDmg;
+      this.hero.mods.baseMaxDmg = this.hero.baseMods.baseMaxDmg;
+      this.hero.mods.baseCritChance = this.hero.baseMods.baseCritChance;
+      this.hero.mods.baseCritDamage = this.hero.baseMods.baseCritDamage;
+    } else {
+      this.hero.mods.baseMinDmg = source.mods.baseMinDmg;
+      this.hero.mods.baseMaxDmg = source.mods.baseMaxDmg;
+      this.hero.mods.baseCritChance = source.mods.baseCritChance;
+      this.hero.mods.baseCritDamage = source.mods.baseCritDamage;
+    }
+  }
+
   protected readonly EquipmentType = EquipmentType;
+  protected readonly console = console;
 }
